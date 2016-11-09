@@ -19,9 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fib.h" />
     <ClInclude Include="TriangleTriples.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="fib.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TriangleTriples.cpp" />
   </ItemGroup>

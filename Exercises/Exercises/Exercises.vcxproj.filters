@@ -18,12 +18,18 @@
     <ClInclude Include="TriangleTriples.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TriangleTriples.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
