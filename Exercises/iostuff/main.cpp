@@ -6,7 +6,6 @@ using namespace std;
 
 int menu()
 {
-	cin.clear();
 
 	printf("\nDo you want to:\n");
 	printf("0. EXIT\n");
@@ -16,6 +15,9 @@ int menu()
 
 	int choice;
 	cin >> choice;
+
+	cin.clear();
+	cin.ignore(INT_MAX, '\n');
 	printf("\n\n");
 
 	return choice;
@@ -43,7 +45,7 @@ void write()
 	{
 		printf("Input new text:\n");
 		string temp;
-		cin.ignore(1000, '\n');
+		cin.ignore();
 		getline(std::cin, temp);
 
 		file << temp;
