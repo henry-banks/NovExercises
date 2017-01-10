@@ -4,8 +4,11 @@
 
 #include "IntVector.h"
 #include "tvector.h"
+#include "Tree.h"
 
-void main()
+
+using namespace std;
+void tests()
 {
 	IntVector *testVec = new IntVector;
 	assert((testVec->size() == 0));
@@ -78,5 +81,26 @@ void main()
 	tvector<int> move2((move1));
 		
 	printf("\nAll Good :D\n\n");
+	system("pause");
+}
+
+void main()
+{
+	Tree t;
+
+	t.insert(5);
+
+	t.find(5) ? printf("works\n\n") : printf("nah\n");
+
+	t.insert(100);
+	t.insert(3);
+	t.insert(-4);
+	t.insert(101);
+
+	t.find(100) ? printf("works\n\n") : printf("nah\n");
+	t.find(3) ? printf("works\n\n") : printf("nah\n");
+	t.find(-4) ? printf("works\n\n") : printf("nah\n");
+	t.find(101) ? printf("works\n\n") : printf("nah\n");
+
 	system("pause");
 }
