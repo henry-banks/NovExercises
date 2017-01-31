@@ -110,12 +110,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="bit_exercises.h" />
+    <ClInclude Include="hashTable.h" />
     <ClInclude Include="IntVector.h" />
     <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="ObjPool.h" />
+    <ClInclude Include="Queue.h" />
+    <ClInclude Include="search.h" />
+    <ClInclude Include="sorts.h" />
+    <ClInclude Include="stack.h" />
+    <ClInclude Include="tHash.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="tvector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="hashTable.cpp" />
     <ClCompile Include="IntVector.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Tree.cpp" />
