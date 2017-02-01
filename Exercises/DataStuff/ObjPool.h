@@ -14,8 +14,6 @@ class obpool
 	vector<bool> poolValidity;
 	vector<size_t> nextList;
 
-	size_t openHead, closedHead;	//index of first open/closed slots
-
 	// Returns the index of the first empty slot found.
 	// Returns -1 if an empty index cannot be found.
 	size_t nextEmpty();
@@ -48,28 +46,52 @@ public:
 
 
 		// Moves the handle to the next valid element in the pool
-		handle &operator++() { index++; }
+		handle& operator++()
+		{
+			for (size_t i = index + 1; i < poolValidity.size(); i++)
+			{
+				if (poolValidity[i])
+				{
+					index = i;
+					return *this;
+				}
+			}
+			index = pool.size();
+			return *this;
+		}
 
 		// Returns a reference to the object in the object pool
-		T& operator*();
+		T& operator*() { return value(); }
 
 		// Returns a const reference to the object in the object pool
-		const T& operator*() const;
+		const T& operator*() const { return value(); }
 
 		// Returns a reference to the object in the object pool
-		T& operator->();
+		T& operator->() { return value(); }
 
 		// Returns a const reference to the object in the object pool
-		const T& operator->() const;
+		const T& operator->() const { return value(); }
 
 		// Returns true they're pointing to the same slot.
 		// Otherwise, returns false.
-		bool operator==(const handle& other);
+		bool operator==(const handle& other) const { return index == other.index; }
+		bool operator!=(const handle& other) const { return index != other.index; }
 	};
 
 	// Adds the given object to the object pool.
 	// Returns a handle with the appropriate information to access the object pool.
-	handle push(T cpy);
+	handle push(T cpy)	//It didn't want to work when I put the implementation below.
+	{
+		pool.resize(pool.size() * 1.5);
+
+		int i = nextEmpty();
+		assert(i != -1);
+		pool[i] = cpy;
+		poolValidity[i] = true;
+
+		return handle(this, i);
+	}
+
 	void pop(size_t idx);
 
 	// Returns true if the handle
@@ -81,13 +103,32 @@ public:
 	const T& at(size_t idx) const;
 
 	// Returns a handle referring to the first valid slot.
-	handle begin();
+	handle begin()
+	{
+		for (int i = 0; i < poolValidity.size(); i++)
+		{
+			if (poolValidity[i])
+				return handle(this, i);
+		}
+		assert(false && "Can not iterate over a pool with no elements!");
+	}
 
 	// Returns a handle referring to the slot at the given index
-	handle get(size_t idx);
+	handle get(size_t idx)
+	{
+		assert(idx < pool.size());
+		return handle(this, idx);
+	}
+
 
 	// Returns a handle referring to the last valid slot.
-	handle end();
+	handle end()
+	{
+		return handle(this, pool.size());
+	}
+
+	//Sets the 
+
 };
 
 template<typename T>
@@ -100,9 +141,10 @@ inline size_t obpool<T>::nextEmpty()
 	}
 
 	size_t curSize = pool.size();
-	pool.resize(pool.size * 1.5);
-	poolValidity.resize(poolValidity.size * 1.5);
-	memset(poolValidity[curSize], 0, sizeof(bool) * curIdx / 2)
+	pool.resize(pool.size() * 1.5);
+	poolValidity.resize(poolValidity.size() * 1.5);
+
+	memset(&poolValidity[curSize], 0, sizeof(bool) * curSize / 2);
 
 	return curSize;
 }
@@ -113,8 +155,6 @@ inline obpool<T>::obpool()
 	//Set all values to 0
 	pool.resize(DEFAULT_POOL_SIZE);
 	poolValidity.resize(DEFAULT_POOL_SIZE);
-
-	memset(&poolValidity, 0, sizeof(bool) * DEFAULT_POOL_SIZE);
 }
 
 template<typename T>
@@ -122,19 +162,6 @@ inline obpool<T>::~obpool()
 {
 	//delete[] pool;
 	//delete[] poolValidity;
-}
-
-template<typename T>
-inline obpool<T>::handle obpool<T>::push(T cpy)
-{
-	pool.resize(pool.size * 1.5);
-
-	int i = nextEmpty();
-	assert(i != -1);
-	pool[i] = cpy;
-	poolValidity[i] = true;
-
-	return handle(this, i);
 }
 
 template<typename T>
@@ -155,14 +182,14 @@ template<typename T>
 inline T & obpool<T>::at(size_t idx)
 {
 	assert(idx != -1);
-	return pool[idx];
+	return &pool[idx];
 }
 
 template<typename T>
 inline const T & obpool<T>::at(size_t idx) const
 {
 	assert(idx != -1);
-	return pool[idx];
+	return &pool[idx];
 }
 
 template<typename T>
@@ -173,16 +200,11 @@ inline obpool<T>::handle::handle()
 }
 
 template<typename T>
-inline obpool<T>::handle::handle(obpool * poolPtr, size_t poolIdx)
-{
-	pool = poolPtr;
-	index = poolIdx;
-}
-
-template<typename T>
 inline T & obpool<T>::handle::value()
 {
-	return at(index);
+	//It didn't like me using at
+	assert(index != -1);
+	return pool->pool[index];
 }
 
 template<typename T>
@@ -201,40 +223,4 @@ template<typename T>
 inline T obpool<T>::handle::getIndex() const
 {
 	return index;
-}
-
-template<typename T>
-inline handle & obpool<T>::handle::operator++()
-{
-	// TODO: insert return statement here
-}
-
-template<typename T>
-inline T & obpool<T>::handle::operator*()
-{
-	// TODO: insert return statement here
-}
-
-template<typename T>
-inline const T & obpool<T>::handle::operator*() const
-{
-	// TODO: insert return statement here
-}
-
-template<typename T>
-inline T & obpool<T>::handle::operator->()
-{
-	// TODO: insert return statement here
-}
-
-template<typename T>
-inline const T & obpool<T>::handle::operator->() const
-{
-	// TODO: insert return statement here
-}
-
-template<typename T>
-inline bool obpool<T>::handle::operator==(const handle & other)
-{
-	return false;
 }

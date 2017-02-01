@@ -11,6 +11,17 @@ struct Person
 	unsigned age;
 };
 
+struct Monster
+{
+	Monster()
+	{
+		ID = typeID = XCoord = YCoord = normalX = normalY = 0;
+	}
+	unsigned short ID, typeID;
+	float XCoord, YCoord;
+	float normalX, normalY;
+};
+
 void main()
 {
 	fstream file;
@@ -18,24 +29,36 @@ void main()
 	file.open("EscalationProgrammerTest.bin", ios_base::in, ios_base::binary);
 
 	unsigned size;
-	Person *people;
+	unsigned int entityNum;
+	Monster *monsters = new Monster[150];
 
+
+	int i = 0;
 	if (file.is_open())
 	{
-		int i = 0;
+		
+
 		while (!file.eof() && file.peek() != EOF)
 		{
-			file.read((char*)&size, sizeof(int));
-			people = new Person[size];
-			file.read((char*)people, sizeof(Person) * size);
+			file.read((char*)&entityNum, sizeof(unsigned int));
+			cout << entityNum << endl;
 
-			cout << char(&people[i].name) << " " << unsigned(people[i].ID) << " " << people[i].age << endl;
-			i++;
-
-			for (int i = 0; i < sizeof(people); i++)
+			if(i <= entityNum)
 			{
-				cout << &people[i].name << " " << unsigned(people[i].ID) << " " << people[i].age << endl;
-			}
+				Monster temp;
+
+				file.read((char*)&temp, sizeof(Monster));
+				cout << temp.ID;
+				cout << " " << temp.typeID;
+				cout << " " << temp.XCoord;
+				cout << " " << temp.YCoord;
+				cout << " " << temp.normalX;
+				cout << " " << temp.normalY;
+				cout << "\n\n";
+
+				monsters[i] = temp;
+				i++;
+			}	
 		}
 		
 

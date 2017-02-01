@@ -251,13 +251,52 @@ void poolTests()
 
 	h1.free();
 	assert(!h1.isValid());
+
+	iPool.push(66);
+	iPool.push(124);
+	obpool<int>::handle h3 = iPool.push(70);
+
+	h2.free();
+	assert((iPool.begin().value()) == 66);
+	assert((h2.value()) == 124);
+
+	
+	obpool<int> pool;
+
+	auto han = pool.push(3);
+	assert(han.value() == 3);
+	assert(han.isValid());
+
+	auto han2 = pool.push(5);
+	assert(han.value() == 5);
+	assert(han.isValid());
+
+	auto han3 = pool.push(7);
+	assert(han.value() == 7);
+	assert(han.isValid());
+
+	auto han4 = pool.push(9);
+	assert(han.value() == 9);
+	assert(han.isValid());
+
+	han3.free();
+
+	int expected[] = { 3,5,9 };
+
+	size_t i;
+	for (auto iter = pool.begin(); iter != pool.end(); iter++)
+	{
+		int val = *iter;
+		assert(expected[i] == val);
+		i++;
+	}
 }
 
 void main()
 {
 	poolTests();
 
-	printf("\n");
+	printf("\nAll good :D\n\n");
 	system("pause");
 }
 
